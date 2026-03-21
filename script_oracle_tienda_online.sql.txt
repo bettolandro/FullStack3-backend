@@ -1,0 +1,108 @@
+-- ============================================
+-- LIMPIEZA
+-- ============================================
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE USUARIO CASCADE CONSTRAINTS';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE PRODUCTO CASCADE CONSTRAINTS';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_USUARIO';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE SEQ_PRODUCTO';
+EXCEPTION
+    WHEN OTHERS THEN NULL;
+END;
+/
+
+-- ============================================
+-- SECUENCIAS
+-- ============================================
+
+CREATE SEQUENCE SEQ_USUARIO
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+CREATE SEQUENCE SEQ_PRODUCTO
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+-- ============================================
+-- TABLA USUARIO
+-- ============================================
+
+CREATE TABLE USUARIO (
+    ID_USUARIO NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL,
+    CORREO VARCHAR2(120) NOT NULL UNIQUE,
+    PASSWORD VARCHAR2(100) NOT NULL,
+    ROL VARCHAR2(20) NOT NULL,
+    ACTIVO NUMBER(1) DEFAULT 1 NOT NULL
+);
+
+-- ============================================
+-- TABLA PRODUCTO
+-- ============================================
+
+CREATE TABLE PRODUCTO (
+    ID_PRODUCTO NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(120) NOT NULL,
+    DESCRIPCION VARCHAR2(250),
+    PRECIO NUMBER(10,2) NOT NULL,
+    STOCK NUMBER NOT NULL,
+    CATEGORIA VARCHAR2(80),
+    ACTIVO NUMBER(1) DEFAULT 1 NOT NULL
+);
+
+-- ============================================
+-- DATOS INICIALES USUARIO
+-- ============================================
+
+INSERT INTO USUARIO (ID_USUARIO, NOMBRE, CORREO, PASSWORD, ROL, ACTIVO)
+VALUES (SEQ_USUARIO.NEXTVAL, 'Administrador Principal', 'admin@tienda.cl', 'admin123', 'ADMIN', 1);
+
+INSERT INTO USUARIO (ID_USUARIO, NOMBRE, CORREO, PASSWORD, ROL, ACTIVO)
+VALUES (SEQ_USUARIO.NEXTVAL, 'Cliente Uno', 'cliente1@tienda.cl', 'cliente123', 'CLIENTE', 1);
+
+INSERT INTO USUARIO (ID_USUARIO, NOMBRE, CORREO, PASSWORD, ROL, ACTIVO)
+VALUES (SEQ_USUARIO.NEXTVAL, 'Cliente Dos', 'cliente2@tienda.cl', 'cliente123', 'CLIENTE', 1);
+
+-- ============================================
+-- DATOS INICIALES PRODUCTO
+-- ============================================
+
+INSERT INTO PRODUCTO (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, CATEGORIA, ACTIVO)
+VALUES (SEQ_PRODUCTO.NEXTVAL, 'Notebook Lenovo IdeaPad', 'Notebook para estudio y oficina', 549990, 10, 'Tecnologia', 1);
+
+INSERT INTO PRODUCTO (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, CATEGORIA, ACTIVO)
+VALUES (SEQ_PRODUCTO.NEXTVAL, 'Mouse Logitech Inalambrico', 'Mouse ergonomico USB', 19990, 25, 'Accesorios', 1);
+
+INSERT INTO PRODUCTO (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, CATEGORIA, ACTIVO)
+VALUES (SEQ_PRODUCTO.NEXTVAL, 'Teclado Mecanico Redragon', 'Teclado mecanico RGB', 45990, 15, 'Accesorios', 1);
+
+INSERT INTO PRODUCTO (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, CATEGORIA, ACTIVO)
+VALUES (SEQ_PRODUCTO.NEXTVAL, 'Monitor Samsung 24', 'Monitor Full HD de 24 pulgadas', 129990, 8, 'Pantallas', 1);
+
+INSERT INTO PRODUCTO (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, CATEGORIA, ACTIVO)
+VALUES (SEQ_PRODUCTO.NEXTVAL, 'Audifonos JBL Tune', 'Audifonos bluetooth', 39990, 20, 'Audio', 1);
+
+COMMIT;
