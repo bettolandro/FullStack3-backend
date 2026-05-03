@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/environments/environment.ts"],
-  "sourcesContent": ["\r\nexport const environment = {\r\n  production: false,\r\n\r\n  // URL base del microservicio de usuarios (puerto 8081)\r\n  apiUsuarios: 'http://localhost:8081/api/usuarios',\r\n\r\n  // URL base del microservicio de productos (puerto 8082)\r\n  apiProductos: 'http://localhost:8082/api/productos',\r\n};\r\n"],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IACaA;;;;;AAAN,IAAMA,eAAWC,eAAA,EAAAC,EAAA,CAAA,KAAG;MACzBC,YAAY;;MAGZC,aAAa;;MAGbC,cAAc;;;;",
-  "names": ["environment", "cov_1nvuzc589y", "s", "production", "apiUsuarios", "apiProductos"]
-}
