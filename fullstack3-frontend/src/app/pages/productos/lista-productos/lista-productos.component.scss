@@ -1,0 +1,113 @@
+
+/* ── BARRA DE FILTROS ────────────────────────────────────── */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.55rem 2rem 0.55rem 0.875rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238892b0' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+
+  &:focus {
+    border-color: var(--accent-blue);
+  }
+
+  option {
+    background: var(--bg-input);
+  }
+}
+
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  user-select: none;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.btn-sm {
+  padding: 0.45rem 0.875rem !important;
+  font-size: 0.8rem !important;
+}
+
+/* ── CELDA DE PRODUCTO ───────────────────────────────────── */
+.producto-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.producto-nombre {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.producto-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+/* ── PRECIO ──────────────────────────────────────────────── */
+.precio-td {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--accent-cyan);
+}
+
+/* ── ID ──────────────────────────────────────────────────── */
+.td-id {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── ACCIONES ────────────────────────────────────────────── */
+.action-btns {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-info {
+  color: var(--accent-blue);
+  font-size: 0.8rem;
+}
+
+.text-muted { color: var(--text-muted); font-size: 0.8rem; }
+
+/* Responsive */
+.hide-mobile  { @media (max-width: 640px)  { display: none !important; } }
+.hide-tablet  { @media (max-width: 900px)  { display: none !important; } }

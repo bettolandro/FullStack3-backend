@@ -1,0 +1,140 @@
+
+<div class="page-container fade-in">
+
+  <!-- ENCABEZADO -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Gestión de <span>Productos</span></h1>
+      <p class="page-subtitle">
+        {{ productos.length }} productos ·
+        <span class="badge badge-success">{{ totalActivos }} activos</span>
+        <span class="badge badge-danger" style="margin-left:4px" *ngIf="sinStock > 0">
+          {{ sinStock }} sin stock
+        </span>
+      </p>
+    </div>
+    <!-- Botón solo visible para ADMIN -->
+    <a routerLink="/productos/nuevo" class="btn-primary-custom" *ngIf="authService.isAdmin()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Nuevo producto
+    </a>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters-bar">
+    <div class="search-wrapper">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar por nombre, descripción..."
+        [(ngModel)]="textoBusqueda"
+        (input)="filtrar()"
+      >
+    </div>
+    <select class="filter-select" [(ngModel)]="categoriaSeleccionada" (change)="filtrar()">
+      <option value="">Todas las categorías</option>
+      <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+    </select>
+    <label class="filter-toggle">
+      <input type="checkbox" [(ngModel)]="soloActivos" (change)="filtrar()">
+      <span>Solo activos</span>
+    </label>
+    <button *ngIf="hayFiltrosActivos" class="btn-outline-custom btn-sm" (click)="limpiarFiltros()">
+      ✕ Limpiar
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-container" *ngIf="cargando">
+    <div class="spinner"></div>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-container" *ngIf="!cargando">
+
+    <div class="empty-state" *ngIf="productosFiltrados.length === 0">
+      <div class="empty-icon">📦</div>
+      <h3>{{ hayFiltrosActivos ? 'Sin resultados' : 'No hay productos' }}</h3>
+      <p>{{ hayFiltrosActivos ? 'Ajusta los filtros de búsqueda' : 'Agrega el primer producto' }}</p>
+    </div>
+
+    <table class="custom-table" *ngIf="productosFiltrados.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th class="hide-mobile">Categoría</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Estado</th>
+          <!-- Columna acciones: solo ADMIN la ve -->
+          <th *ngIf="authService.isAdmin()">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of productosFiltrados">
+
+          <td class="td-id">#{{ p.idProducto }}</td>
+
+          <td>
+            <div class="producto-cell">
+              <span class="producto-nombre">{{ p.nombre }}</span>
+              <span class="producto-desc hide-tablet" *ngIf="p.descripcion">
+                {{ p.descripcion | slice:0:50 }}{{ p.descripcion!.length > 50 ? '...' : '' }}
+              </span>
+            </div>
+          </td>
+
+          <td class="hide-mobile">
+            <span class="badge badge-blue" *ngIf="p.categoria">{{ p.categoria }}</span>
+            <span class="text-muted" *ngIf="!p.categoria">—</span>
+          </td>
+
+          <td class="precio-td">${{ p.precio | number:'1.0-0' }}</td>
+
+          <td>
+            <span class="badge" [ngClass]="getStockClass(p.stock)">{{ p.stock }}</span>
+          </td>
+
+          <td>
+            <span class="badge" [ngClass]="p.activo === 1 ? 'badge-success' : 'badge-danger'">
+              {{ p.activo === 1 ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+
+          <!-- Acciones: solo ADMIN las ve -->
+          <td *ngIf="authService.isAdmin()">
+            <div class="action-btns">
+              <a [routerLink]="['/productos/editar', p.idProducto]" class="btn-edit-custom">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Editar
+              </a>
+              <button class="btn-danger-custom" (click)="eliminar(p)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Eliminar
+              </button>
+            </div>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="table-footer" *ngIf="productosFiltrados.length > 0">
+      <span>Mostrando {{ productosFiltrados.length }} de {{ productos.length }} productos</span>
+      <span *ngIf="hayFiltrosActivos" class="filter-info">🔍 Filtros activos</span>
+    </div>
+
+  </div>
+</div>

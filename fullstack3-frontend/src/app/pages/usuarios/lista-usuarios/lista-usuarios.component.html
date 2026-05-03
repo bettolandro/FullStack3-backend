@@ -1,0 +1,133 @@
+
+<div class="page-container fade-in">
+
+  <!-- ── ENCABEZADO ──────────────────────────────────────── -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Gestión de <span>Usuarios</span></h1>
+      <p class="page-subtitle">
+        {{ usuarios.length }} registros ·
+        <span class="badge badge-success">{{ totalActivos }} activos</span>
+        <span class="badge badge-danger" style="margin-left:4px">{{ totalInactivos }} inactivos</span>
+      </p>
+    </div>
+    <a routerLink="/usuarios/nuevo" class="btn-primary-custom">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Nuevo usuario
+    </a>
+  </div>
+
+  <!-- ── BARRA DE BÚSQUEDA ────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="search-wrapper">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        type="text"
+        placeholder="Buscar por nombre, correo o rol..."
+        [(ngModel)]="textoBusqueda"
+        (input)="filtrar()"
+      >
+    </div>
+    <span class="results-count" *ngIf="textoBusqueda">
+      {{ usuariosFiltrados.length }} resultado(s)
+    </span>
+  </div>
+
+  <!-- ── LOADING ─────────────────────────────────────────── -->
+  <div class="loading-container" *ngIf="cargando">
+    <div class="spinner"></div>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <!-- ── TABLA DE USUARIOS ─────────────────────────────── -->
+  <div class="table-container" *ngIf="!cargando">
+
+    <!-- Estado vacío -->
+    <div class="empty-state" *ngIf="usuariosFiltrados.length === 0">
+      <div class="empty-icon">👤</div>
+      <h3>{{ textoBusqueda ? 'Sin resultados' : 'No hay usuarios' }}</h3>
+      <p>{{ textoBusqueda ? 'Intenta con otro término de búsqueda' : 'Crea el primer usuario con el botón de arriba' }}</p>
+    </div>
+
+    <table class="custom-table" *ngIf="usuariosFiltrados.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th class="hide-mobile">Correo</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of usuariosFiltrados">
+
+          <!-- ID -->
+          <td class="td-id">#{{ u.idUsuario }}</td>
+
+          <!-- Nombre con avatar -->
+          <td>
+            <div class="user-cell">
+              <div class="mini-avatar">{{ u.nombre.charAt(0).toUpperCase() }}</div>
+              <span class="user-name-td">{{ u.nombre }}</span>
+            </div>
+          </td>
+
+          <!-- Correo -->
+          <td class="hide-mobile td-email">{{ u.correo }}</td>
+
+          <!-- Rol -->
+          <td>
+            <span class="badge" [ngClass]="u.rol === 'ADMIN' ? 'badge-purple' : 'badge-blue'">
+              {{ u.rol }}
+            </span>
+          </td>
+
+          <!-- Estado toggle -->
+          <td>
+            <button
+              class="toggle-btn"
+              [class.active]="u.activo === 1"
+              (click)="toggleActivo(u)"
+              [title]="u.activo === 1 ? 'Click para desactivar' : 'Click para activar'"
+            >
+              <span class="toggle-dot"></span>
+              {{ u.activo === 1 ? 'Activo' : 'Inactivo' }}
+            </button>
+          </td>
+
+          <!-- Acciones -->
+          <td>
+            <div class="action-btns">
+              <a [routerLink]="['/usuarios/editar', u.idUsuario]" class="btn-edit-custom">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Editar
+              </a>
+              <button class="btn-danger-custom" (click)="eliminar(u)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Eliminar
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer de tabla -->
+    <div class="table-footer" *ngIf="usuariosFiltrados.length > 0">
+      <span>Mostrando {{ usuariosFiltrados.length }} de {{ usuarios.length }} usuarios</span>
+      <span>Solo rol ADMIN puede ver esta sección</span>
+    </div>
+  </div>
+
+</div>
